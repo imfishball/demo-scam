@@ -1,0 +1,1193 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="robots" content="noindex, nofollow">
+<meta name="theme-color" content="#07080f">
+<title>CLICK HAY BỊ TRICK? — Một cú bấm là mất cả tài khoản (bài diễn tập, KHÔNG phải trang lừa đảo)</title>
+<style>
+/* ============================================================
+   CLICK HAY BỊ TRICK? — Đóng vai nạn nhân
+   Bài diễn tập giáo dục về lừa đảo. Không gửi dữ liệu đi đâu cả.
+   Mọi thương hiệu trong trang đều là HƯ CẤU.
+   ============================================================ */
+*,*::before,*::after{box-sizing:border-box}
+:root{
+  --bg:#07080f; --bg2:#0c0f1e; --panel:#141830; --panel2:#1c2242;
+  --ink:#eef1ff; --dim:#98a1c4; --dim2:#818bb0; --line:#2a3057;
+  --chrome:rgba(11,14,30,.92); --chrome-line:#2a3057;
+  --glow1:#261a52; --glow2:#0a3238;
+  --track:#161a30; --field:#0e1226;
+  --text:#c8cfef; --text2:#ccd3f0;
+  --ok:#22e08a; --bad:#ff3b5c; --warn:#ffc043; --acc:#7c5cff; --acc2:#00e5ff;
+  --oksoft:rgba(34,224,138,.12); --badsoft:rgba(255,59,92,.13); --accsoft:rgba(124,92,255,.14);
+  --btn-bg:#1a1f33; --btn-fg:#ffffff; --btn-line:#1a1f33;
+  /* ---- THANG CHỮ CHUẨN (đổi ở đây là đổi toàn trang) ---- */
+  --fz-micro:11.5px; --fz-meta:12.5px; --fz-sm:13.5px; --fz-base:15px;
+  --fz-lg:17px; --fz-h2:21px; --fz-h1:34px;
+  --safe-top:52px; --tb-h:44px; --content-top:104px;
+}
+/* ---------- CHẾ ĐỘ SÁNG ---------- */
+:root[data-theme="light"]{
+  --bg:#eef1f7; --bg2:#ffffff; --panel:#ffffff; --panel2:#f4f6fb;
+  --ink:#121733; --dim:#5c6584; --dim2:#626c8c; --line:#dbe0ec;
+  --chrome:rgba(255,255,255,.94); --chrome-line:#dbe0ec;
+  --glow1:#d9d4ff; --glow2:#cdf1f5;
+  --track:#dde2ee; --field:#ffffff;
+  --text:#414a68; --text2:#39425c;
+  --ok:#0b8f5b; --bad:#a30f2f; --warn:#8a5600; --acc:#5334d6; --acc2:#00738f;
+  --oksoft:rgba(11,156,99,.10); --badsoft:rgba(216,31,66,.09); --accsoft:rgba(91,63,224,.10);
+  --btn-bg:#151a2b; --btn-fg:#ffffff; --btn-line:#151a2b;
+}
+html,body{margin:0;padding:0;background:var(--bg);color:var(--ink);
+  font-family:'Segoe UI',Roboto,'Helvetica Neue',Arial,sans-serif;-webkit-text-size-adjust:100%}
+/* KHÔNG transition nền: khi trình duyệt không vẽ khung hình (tab chạy nền)
+   hiệu ứng chuyển màu có thể kẹt ở màu cũ. Đổi theme tức thì là an toàn nhất. */
+body{min-height:100vh;background:var(--bg)}
+button{font-family:inherit;cursor:pointer;border:0;color:inherit;background:none}
+b{color:var(--ink)}
+
+/* ---------- BĂNG CẢNH BÁO (luôn hiện) ---------- */
+.safety{position:fixed;top:0;left:0;right:0;z-index:9999;padding-top:env(safe-area-inset-top);
+  background:#8c0019;color:#fff;text-align:center;font-size:var(--fz-micro);font-weight:800;
+  letter-spacing:.3px;padding:6px 8px;line-height:1.4;border-bottom:1px solid #b00020}
+.safety small{display:block;font-weight:400;opacity:.9;letter-spacing:0;font-size:var(--fz-meta);margin-top:2px}
+
+/* ---------- THANH ĐẦU TRANG ---------- */
+.topbar{position:fixed;top:var(--safe-top);left:0;right:0;z-index:9998;
+  display:flex;align-items:center;gap:8px;padding:0 8px 6px;flex-wrap:wrap;justify-content:center}
+.tb{display:flex;align-items:center;gap:7px;background:var(--chrome);backdrop-filter:blur(6px);
+  border:1px solid var(--chrome-line);border-radius:999px;padding:11px 15px;font-size:var(--fz-sm);
+  min-height:44px;
+  font-weight:800;color:var(--ink);transition:background .2s,border-color .2s,color .2s}
+.tb .dot{width:7px;height:7px;border-radius:50%;background:var(--acc2);flex:0 0 auto}
+.tb.step b{color:var(--warn)}
+.tb.exit{background:rgba(90,20,32,.92);color:#ffc9d0;border-color:#6d1b28;padding:11px 15px}
+.tb.exit:hover{background:var(--bad);color:#fff}
+:root[data-theme="light"] .tb.exit{background:rgba(216,31,66,.1);color:#b3122f;border-color:rgba(216,31,66,.3)}
+:root[data-theme="light"] .tb.exit:hover{background:var(--bad);color:#fff}
+.tb.theme{padding:11px 13px;min-width:44px;color:var(--ink)}
+.tb.theme:hover{border-color:var(--acc2)}
+
+/* ---------- THANH TIẾN ĐỘ ---------- */
+.progbar{position:fixed;top:calc(var(--safe-top) + var(--tb-h));left:0;right:0;height:4px;
+  background:var(--track);z-index:9997}
+.progbar i{display:block;height:100%;width:0;background:var(--ink);
+  transition:width .45s cubic-bezier(.3,1,.4,1)}
+
+/* ---------- KHUNG CHUNG ---------- */
+.wrap{width:100%;max-width:460px;margin:0 auto;padding:calc(var(--content-top) + 10px) 14px 44px}
+
+/* ---------- MÀN MỞ ĐẦU ---------- */
+.hero{text-align:center;padding:6px 4px 18px}
+.kicker{display:inline-block;font-size:var(--fz-micro);font-weight:800;letter-spacing:1.4px;color:var(--dim);
+  background:transparent;border:1px solid var(--line);padding:5px 12px;border-radius:999px;margin-bottom:16px}
+h1{margin:0;font-size:var(--fz-h1);line-height:1.08;letter-spacing:-1px;font-weight:800}
+h1 span{color:var(--ink)}
+.tagline{display:inline-block;margin:12px 0 0;padding:7px 14px;border-radius:999px;
+  background:var(--badsoft);border:1px solid var(--bad);color:var(--bad);
+  font-size:var(--fz-base);font-weight:800;letter-spacing:.1px}
+.sub{color:var(--dim);font-size:var(--fz-base);line-height:1.7;margin:14px auto 0;max-width:32ch}
+.storybox{background:var(--panel);border:1px solid var(--line);border-radius:10px;padding:16px;
+  margin:20px 0 16px;text-align:left}
+.storybox .lab{font-size:var(--fz-micro);font-weight:800;letter-spacing:1.3px;color:var(--bad);margin-bottom:8px}
+.storybox p{margin:0;color:var(--text2);font-size:var(--fz-base);line-height:1.75}
+.storybox .bigbtn{margin-top:12px}
+.rules{text-align:left;background:var(--panel);border:1px solid var(--line);border-radius:10px;
+  padding:16px;margin:16px 0}
+.rules h3{margin:0 0 10px;font-size:var(--fz-meta);letter-spacing:1.2px;color:var(--warn);text-transform:uppercase}
+.rules ul{margin:0;padding-left:18px;color:var(--text);font-size:var(--fz-base);line-height:1.8}
+.rules li{margin-bottom:9px}
+.bigbtn{width:100%;padding:16px;border-radius:10px;font-size:15px;font-weight:800;letter-spacing:.2px;
+  color:var(--btn-fg);background:var(--btn-bg);border:1px solid var(--btn-line)}
+.bigbtn:active{transform:translateY(1px)}
+.ghostbtn{width:100%;margin-top:10px;padding:12px;border-radius:10px;background:transparent;
+  color:var(--dim);border:1px solid var(--line);font-size:var(--fz-base);font-weight:700}
+.tiny{color:var(--dim2);font-size:var(--fz-meta);text-align:center;margin-top:16px;line-height:1.7}
+
+/* ---------- KHUNG ĐIỆN THOẠI ---------- */
+.phonebox{display:flex;flex-direction:column;align-items:center}
+.phone{position:relative;height:min(80vh,760px);aspect-ratio:9/19;width:auto;max-width:100%;
+  --p-micro:11.5px; --p-meta:12.5px; --p-sm:13.5px; --p-base:15px; --p-lg:17px;
+  margin:0 auto;background:#04050c;border:2px solid #2b3157;border-radius:34px;overflow:hidden;
+  box-shadow:0 1px 2px rgba(0,0,0,.10), 0 12px 28px rgba(0,0,0,.10);
+  /* Khung điện thoại luôn luôn dùng chữ sáng, KHÔNG kế thừa màu chữ của trang.
+     Nếu không ép ở đây thì ở chế độ sáng các tin nhắn sẽ thành chữ tối trên nền tối
+     và nhìn như bị làm mờ. */
+  color:#e9eeff}
+.wm{position:absolute;inset:0;z-index:6;pointer-events:none;display:flex;align-items:center;
+  justify-content:center;opacity:.05;font-size:22px;font-weight:900;color:#fff;
+  transform:rotate(-30deg);letter-spacing:3px}
+.pane{position:absolute;inset:0;display:flex;flex-direction:column;opacity:0;pointer-events:none;
+  transition:opacity .26s ease;overflow:hidden}
+.pane.on{opacity:1;pointer-events:auto}
+.statusbar{position:relative;height:40px;flex:0 0 auto;display:flex;align-items:center;
+  gap:9px;padding:0 16px;font-size:var(--p-meta);font-weight:800;
+  background:#08090f;color:#fff;z-index:5}
+.statusbar .rt{font-size:var(--p-micro);opacity:.75;margin-left:auto}
+.homebar{position:absolute;left:50%;bottom:6px;transform:translateX(-50%);width:96px;height:4px;
+  border-radius:99px;background:rgba(255,255,255,.3);z-index:8}
+
+/* thanh app */
+.apphead{flex:0 0 auto;padding:9px 14px;background:#1b2a3d;border-bottom:1px solid #24415e;
+  display:flex;align-items:center;gap:9px}
+.apphead .av{width:30px;height:30px;border-radius:8px;display:grid;place-items:center;
+  font-weight:800;font-size:var(--p-sm);color:#fff;background:#2f8b4f;flex:0 0 auto}
+.apphead .nm{font-size:var(--p-base);font-weight:800;line-height:1.3;color:#f2f6ff}
+.apphead .st{font-size:var(--p-micro);font-weight:700;color:#7fd4a6}
+
+/* chat */
+.chat{flex:1;overflow:auto;padding:12px;display:flex;flex-direction:column;gap:7px;background:#0d1520;color:#eef3ff}
+.msg{max-width:86%;padding:10px 12px;border-radius:14px;font-size:var(--p-base);font-weight:500;line-height:1.65;
+  color:#f4f7ff;animation:up .28s ease}
+.msg.them{align-self:flex-start;background:#243450;border-bottom-left-radius:4px}
+.msg.sys{align-self:center;background:transparent;color:#93a1bd;font-size:var(--p-micro);font-weight:600;text-align:center}
+.msg .nm{font-size:var(--p-micro);font-weight:800;color:#7fc4ff;margin-bottom:4px}
+@keyframes up{from{transform:translateY(7px);opacity:0}to{transform:none;opacity:1}}
+
+/* phần tử bẫy — trông như bình thường nhưng bấm được */
+.tap{position:relative;display:block;width:100%;text-align:left;background:rgba(255,255,255,.07);
+  border:1px solid rgba(255,255,255,.13);border-radius:11px;padding:9px 11px;
+  animation:hz 2.1s ease-out infinite}
+@keyframes hz{0%{box-shadow:0 0 0 0 rgba(255,192,67,.5)}72%{box-shadow:0 0 0 13px rgba(255,192,67,0)}
+  100%{box-shadow:0 0 0 0 rgba(255,192,67,0)}}
+.tap::before{content:"";position:absolute;inset:-1px;border-radius:11px;
+  border:1.6px dashed rgba(255,192,67,.6);opacity:.0;transition:.25s}
+.tap.hint::before{opacity:1}
+.tap:active{transform:scale(.985);background:rgba(255,192,67,.14)}
+.tap .u{display:flex;align-items:center;gap:8px;font-size:var(--p-sm);font-weight:700;color:#8fd9ff;line-height:1.5}
+.tap .u .ic{font-size:15px}
+.tap .warn{display:block;margin-top:7px;font-size:var(--p-micro);font-weight:700;color:#ffb454;
+  letter-spacing:.2px}
+
+/* thanh hành động an toàn */
+.safebar{flex:0 0 auto;padding:8px 12px 18px;border-top:1px solid #2b4a68;background:#1a2637;
+  display:flex;align-items:center;gap:8px}
+.safebar .q{flex:1;min-width:0;font-size:var(--p-micro);font-weight:600;color:#a7b6d2;line-height:1.4}
+.safebar button{flex:0 0 auto;padding:13px 16px;border-radius:999px;font-size:var(--p-sm);font-weight:800;
+  min-height:46px;
+  background:rgba(34,224,138,.16);border:1px solid rgba(34,224,138,.42);color:#8affc1;
+  min-height:46px}
+.safebar button:active{background:rgba(34,224,138,.34)}
+
+/* trình duyệt giả */
+.urlbar{flex:0 0 auto;background:#e9ecf4;padding:8px 12px;display:flex;align-items:center;gap:8px}
+.urlbar .back{width:24px;height:24px;border-radius:6px;background:#d7dcea;color:#3f4864;font-size:14px;
+  font-weight:900;flex:0 0 auto}
+.urlbar .url{flex:1;min-width:0;background:#fff;border-radius:8px;padding:6px 10px;font-size:var(--p-micro);
+  font-weight:800;color:#4a5470;word-break:break-all;font-family:ui-monospace,Consolas,monospace;
+  border:1px solid #d5d9e6}
+.urlbar .url i{color:#c0392b;font-style:normal}
+.web{flex:1;overflow:auto;background:#fff;color:#101322;padding:0 0 20px}
+.webbar{display:flex;align-items:center;gap:10px;padding:13px 15px;border-bottom:1px solid #eceef6}
+.webbar .logo{width:32px;height:32px;border-radius:8px;background:#e8503a;
+  display:grid;place-items:center;color:#fff;font-weight:800;font-size:var(--p-base);flex:0 0 auto}
+.webbar .ttl{font-size:var(--p-lg);font-weight:800;letter-spacing:-.2px;line-height:1.2}
+.webbar .ttl small{display:block;font-size:var(--p-micro);font-weight:600;color:#6d7691;letter-spacing:.2px;margin-top:2px}
+.webbody{padding:14px 15px}
+.fcard{border:1.4px solid #dfe3ee;border-radius:12px;padding:12px;background:#fbfcff}
+.fcard .fn{font-size:var(--p-base);font-weight:800;word-break:break-all;line-height:1.4}
+.fcard .fm{font-size:var(--p-micro);color:#5e6780;margin-top:6px}
+.warnbox{margin-top:11px;background:#fff6e6;border:1.4px solid #ffca80;border-radius:10px;
+  padding:10px 12px;font-size:var(--p-micro);font-weight:700;color:#a35b00;line-height:1.5}
+.dlbtn{width:100%;margin-top:14px;padding:15px;border-radius:9px;font-size:var(--p-base);font-weight:800;
+  color:#fff;background:#1a73e8;border:1px solid #1660c4;
+  animation:hz 2.1s ease-out infinite}
+.dlbtn:active{transform:scale(.985)}
+.ads{margin-top:14px;border:1px dashed #ccd2e2;border-radius:10px;padding:11px;font-size:var(--p-micro);
+  color:#5e6780;text-align:center}
+
+/* tải xuống */
+.dlwrap{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;
+  gap:14px;background:#fff;color:#101322;padding:24px}
+.dlicon{font-size:52px}
+.dlwrap .fn{font-size:var(--p-base);font-weight:800;word-break:break-all;text-align:center}
+.dlwrap .fs{font-size:var(--p-meta);color:#5e6780}
+.bar{width:100%;max-width:230px;height:9px;border-radius:99px;background:#e6e9f2;overflow:hidden}
+.bar i{display:block;height:100%;width:0;background:#1a73e8}
+.dlpct{font-size:var(--p-base);font-weight:800;color:#1a73e8}
+
+/* trình quản lý tệp */
+.files{flex:1;overflow:auto;background:#f7f8fc;color:#101322;padding:0 0 18px}
+.fpath{padding:12px 14px;background:#fff;border-bottom:1px solid #e6e9f2;font-size:var(--p-sm);
+  color:#4a5470;font-weight:800}
+.fitem{display:flex;align-items:center;gap:11px;padding:12px 14px;background:#fff;
+  border-bottom:1px solid #eef0f6;text-align:left;width:100%}
+.fitem .fi{font-size:24px;flex:0 0 auto}
+.fitem .fn{flex:1;min-width:0;font-size:var(--p-base);font-weight:700;word-break:break-all;line-height:1.4}
+.fitem .fm{display:block;font-size:var(--p-micro);color:#5e6780;margin-top:4px}
+.fitem .fb{flex:0 0 auto;font-size:var(--p-micro);font-weight:800;color:#a35b00;background:#fff6e6;
+  border:1px solid #ffd79a;border-radius:999px;padding:3px 8px}
+
+/* nhiễm / cảnh báo — danh sách cuộn được, chừa chỗ cho nút ở đáy */
+.infected{position:absolute;left:0;right:0;top:0;bottom:94px;z-index:5;display:none;
+  flex-direction:column;align-items:center;justify-content:flex-start;gap:9px;
+  padding:14px 16px 8px;text-align:center;overflow:auto;-webkit-overflow-scrolling:touch}
+.infected.on{display:flex}
+.infected .vig{position:absolute;inset:0;z-index:-1;background:#2a0a12}
+.infected .sh{font-size:38px;animation:buzz 1.1s infinite;flex:0 0 auto}
+@keyframes buzz{0%,88%,100%{transform:rotate(0)}90%{transform:rotate(-7deg)}94%{transform:rotate(6deg)}}
+.infected h2{margin:0;font-size:var(--p-lg);color:#ff8b9d;letter-spacing:-.2px;line-height:1.3;flex:0 0 auto}
+.infected .bd{font-size:var(--p-meta);color:#ffd7de;line-height:1.6;max-width:32ch;flex:0 0 auto}
+.infected ul{margin:2px 0 0;padding:0;list-style:none;width:100%;max-width:300px;flex:0 1 auto}
+.infected li{display:flex;gap:9px;align-items:flex-start;text-align:left;font-size:var(--p-micro);
+  color:#ffe3e7;background:rgba(0,0,0,.3);border:1px solid rgba(255,59,92,.3);border-radius:9px;
+  padding:8px 10px;margin-bottom:6px;line-height:1.4;animation:up .3s ease}
+.infected li .x{color:var(--bad);font-weight:900;flex:0 0 auto}
+.batt{display:flex;align-items:center;gap:8px;font-size:var(--p-micro);color:#ff8b9d;
+  font-weight:800;flex:0 0 auto;padding-bottom:2px}
+.batt .bcell{width:40px;height:17px;border:2px solid #ff8b9d;border-radius:4px;padding:2px}
+.batt .bcell i{display:block;height:100%;background:#ff8b9d;transition:width .4s}
+/* thanh nút cố định ở đáy màn cảnh báo — luôn nằm gọn trong khung */
+.infbar{position:absolute;left:0;right:0;bottom:14px;z-index:9;padding:0 14px 0;
+  background:linear-gradient(180deg,rgba(42,10,18,0),#2a0a12 34%)}
+.infbar .underbtn{margin:0}
+
+/* thông báo đổ ùng */
+.notif{position:absolute;left:9px;right:9px;top:30px;z-index:7;display:flex;flex-direction:column;gap:6px;
+  pointer-events:none}
+.nt{background:#161a2c;border:1px solid rgba(255,59,92,.5);border-radius:8px;
+  padding:9px 11px;animation:drop .35s cubic-bezier(.2,1.3,.4,1)}
+.nt .t{font-size:var(--p-micro);font-weight:800;color:#ff8b9d;display:flex;justify-content:space-between}
+.nt .b{font-size:var(--p-meta);color:#f0f3ff;margin-top:3px;line-height:1.45}
+@keyframes drop{from{transform:translateY(-14px);opacity:0}to{transform:none;opacity:1}}
+.shake{animation:shk .5s cubic-bezier(.36,.07,.19,.97)}
+@keyframes shk{10%,90%{transform:translate(-2px,1px)}20%,80%{transform:translate(4px,-2px)}
+  30%,50%,70%{transform:translate(-7px,3px)}40%,60%{transform:translate(7px,-3px)}}
+.redline{display:none}
+
+/* an toàn */
+.safefinish{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;
+  gap:11px;text-align:center;padding:22px;background:#04140e}
+.safefinish .ic{font-size:50px}
+.safefinish h2{margin:0;font-size:var(--p-lg);color:var(--ok);line-height:1.3}
+.safefinish p{margin:0;color:#a9f5cf;font-size:var(--p-sm);line-height:1.75;max-width:30ch}
+
+/* ---------- DẢI TỔN HẠI ---------- */
+.dmg{display:flex;flex-wrap:wrap;gap:6px;margin-top:12px}
+.dmg:empty{display:none}
+.chip{font-size:var(--fz-meta);font-weight:700;padding:6px 11px;border-radius:6px;
+  background:var(--oksoft);border:1px solid var(--ok);color:var(--ink);
+  animation:up .3s ease;transition:background .2s,color .2s}
+.chip.bad{background:var(--badsoft);border-color:var(--bad);color:var(--bad)}
+.chip.note{background:var(--accsoft);border-color:var(--acc);color:var(--acc)}
+.stagehint{text-align:center;color:var(--dim);font-size:var(--fz-meta);line-height:1.7;margin-top:12px}
+.underbtn{width:100%;margin-top:14px;padding:15px;border-radius:10px;font-size:var(--fz-base);font-weight:800;
+  color:var(--btn-fg);background:var(--btn-bg);border:1px solid var(--btn-line)}
+.underbtn.off{opacity:.4}
+.replaybtn{width:100%;margin-top:9px;padding:12px;border-radius:10px;background:transparent;
+  color:var(--dim);border:1px solid var(--line);font-size:var(--fz-sm);font-weight:700}
+
+/* ---------- MÀN PHÂN TÍCH ---------- */
+.apwrap{max-width:540px;margin:0 auto;padding:calc(var(--content-top) + 10px) 14px 44px}
+.aph{text-align:center;padding:4px 4px 18px}
+.aph .kb{font-size:var(--fz-micro);font-weight:800;letter-spacing:1.6px;color:var(--bad);
+  border:1.5px solid var(--bad);border-radius:999px;padding:4px 12px;display:inline-block}
+.aph h2{margin:12px 0 8px;font-size:var(--fz-h2);letter-spacing:-.4px;line-height:1.25}
+.aph p{margin:0;color:var(--dim);font-size:var(--fz-base);line-height:1.75}
+.outcome{text-align:left;border-radius:10px;padding:16px;margin-bottom:18px;font-size:var(--fz-base);line-height:1.75}
+.outcome.bad{background:var(--badsoft);border:1px solid var(--bad);color:var(--bad)}
+.outcome.ok{background:var(--oksoft);border:1px solid var(--ok);color:var(--ok)}
+.tl{background:var(--panel);border:1px solid var(--line);border-radius:10px;padding:14px;margin-bottom:18px}
+.tl .t{font-size:var(--fz-micro);font-weight:800;letter-spacing:1.2px;color:var(--warn);margin-bottom:10px}
+.tstep{display:flex;gap:10px;padding:9px 0;border-bottom:1px dashed var(--line);font-size:var(--fz-sm);line-height:1.55}
+.tstep:last-child{border-bottom:0}
+.tstep .sn{flex:0 0 auto;width:19px;height:19px;border-radius:6px;background:var(--panel2);color:var(--dim);
+  display:grid;place-items:center;font-size:var(--fz-micro);font-weight:800;border:1px solid var(--line)}
+.tstep.hit .sn{background:var(--bad);color:#fff;border-color:var(--bad)}
+.tstep.ok .sn{background:var(--ok);color:var(--bg);border-color:var(--ok)}
+.tstep .sx{color:var(--text2)}
+.flhead{margin:22px 0 12px;font-size:var(--fz-base);font-weight:800;letter-spacing:.3px;
+  color:var(--warn);line-height:1.5}
+.flhead small{display:block;font-size:var(--fz-meta);font-weight:400;letter-spacing:0;color:var(--dim);margin-top:5px}
+.rflag-wrap{margin-bottom:8px}
+.rflag{display:flex;gap:10px;align-items:flex-start;width:100%;text-align:left;background:var(--panel);
+  border:1px solid var(--line);border-radius:10px;padding:13px;transition:border-color .16s}
+.rflag:hover{border-color:rgba(255,192,67,.5)}
+.rflag.open{border-color:var(--bad);background:var(--badsoft)}
+.rflag .fn{flex:0 0 auto;width:23px;height:23px;border-radius:7px;background:var(--panel2);color:var(--dim);
+  display:grid;place-items:center;font-size:var(--fz-sm);font-weight:800;margin-top:1px}
+.rflag.open .fn{background:var(--bad);color:#fff}
+.rflag .fx{flex:1;min-width:0}
+.rflag b{display:block;font-size:var(--fz-base);line-height:1.45;color:var(--ink)}
+.rflag .fw{display:block;font-size:var(--fz-meta);color:var(--dim);margin-top:4px}
+.fdet{display:none;padding:12px 13px 13px;background:var(--badsoft);border:1px solid var(--bad);
+  border-top:0;border-radius:0 0 10px 10px;font-size:var(--fz-sm);line-height:1.78;color:var(--text)}
+.fdet.show{display:block;animation:up .24s ease}
+.fdet .rule{margin-top:9px;padding:9px 11px;background:var(--accsoft);border-left:3px solid var(--acc);
+  border-radius:0 8px 8px 0;font-size:var(--fz-meta);line-height:1.6;color:var(--text2)}
+.fixbox{margin-top:18px;background:var(--badsoft);border:1px solid var(--bad);
+  border-radius:10px;padding:15px;font-size:var(--fz-sm);line-height:1.78;color:var(--text2)}
+.fixbox b{display:block;color:var(--bad);font-size:var(--fz-base);margin-bottom:6px}
+.c333{background:var(--panel);border:1px solid var(--line);border-radius:10px;padding:16px;margin-top:20px}
+.c333 h3{margin:0 0 11px;font-size:var(--fz-lg);color:var(--ink)}
+.c333 ul{margin:0;padding-left:18px;font-size:var(--fz-base);line-height:1.85;color:var(--text)}
+.c333 li{margin-bottom:8px}
+.cardbox{margin-top:20px;background:var(--panel);border:1px solid var(--line);border-radius:10px;padding:16px;
+  text-align:center}
+.cardbox .cap{font-size:var(--fz-meta);color:var(--dim);margin:7px 0 0;line-height:1.65}
+.cardbox img{width:100%;border-radius:12px;display:block;margin:11px 0}
+.namein{width:100%;padding:11px 12px;border-radius:8px;border:1px solid var(--line);background:var(--field);
+  color:var(--ink);font-size:var(--fz-base);font-family:inherit;margin-top:12px;text-align:center}
+.namein:focus{outline:0;border-color:var(--acc2)}
+.dl{width:100%;padding:14px;border-radius:10px;font-size:var(--fz-base);font-weight:800;
+  color:var(--btn-fg);background:var(--btn-bg);border:1px solid var(--btn-line);margin-top:9px}
+.footbtns{display:flex;gap:9px;margin-top:18px}
+.footbtns button{flex:1;padding:14px;border-radius:10px;font-size:var(--fz-sm);font-weight:800}
+.footbtns .p{color:var(--btn-fg);background:var(--btn-bg);border:1px solid var(--btn-line)}
+.footbtns .s{background:transparent;color:var(--dim);border:1px solid var(--line)}
+.pagfoot{text-align:center;margin-top:18px;color:var(--dim2);font-size:var(--fz-meta);line-height:1.8}
+
+:focus-visible{outline:2px solid var(--acc2);outline-offset:2px;border-radius:6px}
+.phone :focus-visible{outline-color:#8fd9ff}`n.toast{position:fixed;left:50%;bottom:22px;transform:translateX(-50%) translateY(18px);
+  background:var(--panel);color:var(--ink);font-size:var(--fz-sm);font-weight:700;padding:12px 18px;
+  border-radius:8px;border:1px solid var(--line);
+  z-index:99999;opacity:0;pointer-events:none;transition:.28s;
+  max-width:88vw;text-align:center}
+.toast.on{opacity:1;transform:translateX(-50%) translateY(0)}
+
+/* Tôn trọng thiết lập “giảm chuyển động” của hệ điều hành: bỏ rung, rung nhẹ
+   và nhịp đếm ngược nhấp nháy — nhưng GIỮ NGUYÊN việc hiện/ẩn màn hình, vì đó
+   là chức năng chứ không phải trang trí. */
+@media (prefers-reduced-motion: reduce){
+  *,*::before,*::after{animation-duration:.01ms!important;animation-iteration-count:1!important;
+    transition-duration:.01ms!important}
+  .tap::after{opacity:1!important}
+  .infected .sh{animation:none!important}
+  .fitem .fb{animation:none!important}
+}
+
+@media print{
+  body{background:#fff}
+  .safety{background:#b00020!important;-webkit-print-color-adjust:exact;print-color-adjust:exact}
+  .topbar,.progbar,.phonebox,.toast,.footbtns,.namein,.dl{display:none!important}
+  .wrap,.apwrap{padding:14px 8px}
+  .fdet{display:block!important}
+  .rflag,.fixbox,.cardbox{break-inside:avoid}
+}
+</style>
+</head>
+<body>
+
+<div class="safety">
+  ⚠ BÀI DIỄN TẬP GIÁO DỤC — KHÔNG PHẢI TRANG LỪA ĐẢO · KHÔNG NHẬP THÔNG TIN THẬT
+  <small>Toàn bộ nội dung là giả lập, chạy trên máy bạn, không được gửi đi đâu cả. Thương hiệu trong trang đều là hư cấu.</small>
+</div>
+
+<div class="topbar">
+  <span class="tb brand"><span class="dot"></span>CLICK HAY BỊ TRICK?</span>
+  <span class="tb step" id="tbStep">Chặng <b>1</b>/5</span>
+  <button class="tb theme" id="tbTheme" onclick="toggleTheme()" title="Đổi chế độ sáng / tối" aria-label="Đổi chế độ sáng hoặc tối">☀️</button>
+  <button class="tb exit" onclick="restart()" title="Chơi lại từ đầu" aria-label="Chơi lại từ đầu">↻ Chơi lại</button>
+</div>
+<div class="progbar"><i id="pbar"></i></div>
+
+<!-- ================= MỞ ĐẦU ================= -->
+<div class="wrap" id="intro">
+  <div class="hero">
+    <span class="kicker">HƯỚNG 2 · CẢNH GIÁC LỪA ĐẢO & KỸ NĂNG SỐ AN TOÀN</span>
+    <h1>CLICK HAY<br><span>BỊ TRICK?</span></h1>
+    <p class="tagline">Một cú bấm là mất cả tài khoản</p>
+    <p class="sub">Nhóm lớp vừa gửi cho bạn một thứ gì đó — vào lúc 23h41 đêm.
+      Bạn làm gì với nó? Chọn 1 trong 2 kịch bản dưới đây.</p>
+  </div>
+
+  <div class="storybox">
+    <div class="lab">KỊCH BẢN 1 · MÙA THI</div>
+    <p>Nhóm Zalo lớp 11T1 đang sôi sục trước kỳ thi. Một người lạ vừa đăng tin mà cả lớp đang bấm vào.
+      <b>Bạn sẽ dùng chính chiếc điện thoại này</b> để đi qua từng bước. Cứ làm đúng như bạn thật sự sẽ làm.</p>
+    <button class="bigbtn" onclick="start(1)">CHƠI KỊCH BẢN 1 →</button>
+  </div>
+
+  <div class="storybox">
+    <div class="lab">KỊCH BẢN 2 · TIN GIẢ</div>
+    <p>Một ảnh chụp màn hình <b>“tin khẩn: hoãn thi THPT 2026”</b> đang lan trong nhóm lớp.
+      Không ai biết nguồn ở đâu. Bạn sẽ mở nó ra — và quyết định có chia sẻ hay không.</p>
+    <button class="bigbtn" onclick="start(2)">CHƠI KỊCH BẢN 2 →</button>
+  </div>
+
+  <div class="rules">
+    <h3>Trước khi bắt đầu</h3>
+    <ul>
+      <li>Đây là <b>bài diễn tập</b>. Không có màn hình này gửi đi bất cứ dữ liệu thật nào của bạn.</li>
+      <li>Chỉ cần <b>chạm vào các nút, chữ và đường dẫn</b> trên màn hình. Không cần gõ gì cả.</li>
+      <li>Muốn dừng lại thì chạm nút ở <b>đáy khung</b>: Đóng app, Quay lại hoặc Xoá tệp. Chọn bất kỳ nút nào cũng ra phần phân tích.</li>
+      <li>Sau khi đi hết câu chuyện, trang sẽ chỉ ra <b>từng dấu hiệu lừa đảo</b> mà bạn vừa gặp.</li>
+    </ul>
+  </div>
+
+  <p class="tiny">Không chấm điểm. Không ai bị phạt.<br>
+    Nếu bạn cảm thấy không thoải mái, bấm “Chơi lại” ở thanh trên bất cứ lúc nào.</p>
+</div>
+
+<!-- ================= ĐIỆN THOẠI ================= -->
+<div class="wrap" id="stage" style="display:none">
+  <div class="phonebox">
+    <div class="phone" id="phone">
+      <div class="wm">DIỄN TẬP</div>
+
+      <!-- Chặng 1 · Zalo -->
+      <div class="pane" id="p-zalo">
+        <div class="statusbar"><span id="t1">23:41</span><span class="rt">LTE ▮</span></div>
+        <div class="apphead">
+          <div class="av" id="zaAv">11T1</div>
+          <div><div class="nm" id="zaNm">Lớp 11T1 — ĐỒNG ĐỘI KỲ THI</div><div class="st" id="zaSt">14 thành viên</div></div>
+        </div>
+        <div class="chat" id="zaloChat">
+          <div class="msg sys">Hôm nay</div>
+        </div>
+        <div class="safebar">
+          <span class="q" id="zaQ">Không bấm vào gì cả?</span>
+          <button onclick="safeExit('closed')">✕ Đóng app</button>
+        </div>
+        <div class="homebar"></div>
+      </div>
+
+      <!-- Chặng 2 · Trình duyệt -->
+      <div class="pane" id="p-web">
+        <div class="statusbar"><span>23:42</span><span class="rt">LTE ▮</span></div>
+        <div class="urlbar">
+          <span class="back">‹</span>
+          <span class="url" id="webUrl">🔒 <i>drive-share-free.top</i>/de-thi-toan-2026</span>
+        </div>
+        <div class="web">
+          <div class="webbar">
+            <div class="logo" id="webLogo">D</div>
+            <div class="ttl"><span id="webTitle">Drive — Tài liệu</span><small id="webSub">Tải bởi: người dùng ẩn danh</small></div>
+          </div>
+          <div class="webbody">
+            <div class="fcard">
+              <div class="fn" id="webFn">de-thi-toan-2026.zip</div>
+              <div class="fm" id="webFm">24 MB · Tải lên 23:38 · Chia sẻ công khai</div>
+            </div>
+            <div class="warnbox" id="webWarn">⚠ Tệp này có thể chứa phần mềm độc hại. Không ai kiểm tra nội dung.</div>
+            <button class="dlbtn" id="dlBtn">⬇ TẢI XUỐNG</button>
+            <div class="ads" id="webAds">Quảng cáo: Tài liệu luyện thi THPT 2026 · Săn suất học bài miễn phí</div>
+          </div>
+        </div>
+        <div class="safebar">
+          <span class="q" id="webQ">Thấy cảnh báo đỏ rồi?</span>
+          <button onclick="safeExit('back')">← Quay lại</button>
+        </div>
+        <div class="homebar"></div>
+      </div>
+
+      <!-- Chặng 3 · Đang tải -->
+      <div class="pane" id="p-dl">
+        <div class="statusbar"><span>23:42</span><span class="rt">LTE ▮</span></div>
+        <div class="dlwrap">
+          <div class="dlicon" id="dlIcon">📥</div>
+          <div class="fn" id="dlFn">de-thi-toan-2026.zip</div>
+          <div class="bar"><i id="dlBar"></i></div>
+          <div class="dlpct" id="dlPct">0%</div>
+          <div class="fs" id="dlFs">Đang tải xuống…</div>
+        </div>
+        <div class="homebar"></div>
+      </div>
+
+      <!-- Chặng 4 · Trình quản lý tệp -->
+      <div class="pane" id="p-files">
+        <div class="statusbar"><span>23:43</span><span class="rt">LTE ▮</span></div>
+        <div class="fpath" id="fiPath">Tệp của tôi › Tải về</div>
+        <div class="files">
+          <button class="fitem" id="fileRow">
+            <span class="fi" id="fiIcon">📄</span>
+            <span class="fn"><span id="fiName">de-thi-toan-2026-zip.exe</span><span class="fm" id="fiMeta">24 MB · Tải về lúc 23:43 · Chưa kiểm tra</span></span>
+            <span class="fb" id="fiBtn" style="animation:hz 2.1s ease-out infinite">MỞ</span>
+          </button>
+          <div class="warnbox" id="fiWarn" style="margin:11px 14px 0">
+            ⚠ Tệp này không phải ứng dụng an toàn. Chạy nó có thể gây hại cho thiết bị của bạn.</div>
+        </div>
+        <div class="safebar">
+          <span class="q" id="fiQ">Còn dòng cảnh báo này kìa.</span>
+          <button id="fiSafeBtn" onclick="safeExit('deleted')">🗑 Xoá tệp</button>
+        </div>
+        <div class="homebar"></div>
+      </div>
+
+      <!-- Chặng 5 · Nhiễm -->
+      <div class="pane" id="p-inf">
+        <div class="statusbar"><span>23:43</span><span class="rt">X LTE</span></div>
+        <div class="notif" id="notifBox"></div>
+        <div class="redline"></div>
+        <div class="infected" id="infBox">
+          <div class="vig"></div>
+          <div class="sh" id="infSh">⚠️</div>
+          <h2 id="infTitle">Thiết bị của bạn đã bị xâm nhập</h2>
+          <div class="bd" id="infBody">Một chương trình lạ đã chạy và tự gửi đi thứ nó lấy được từ máy bạn.</div>
+          <ul id="infList">
+            <li><span class="x">✕</span><span>2 ứng dụng lạ được cài, tự chạy khi mở máy</span></li>
+            <li><span class="x">✕</span><span>Mật khẩu tài khoản Google trên máy đã bị đổi</span></li>
+            <li><span class="x">✕</span><span>3 tin nhắn đã được gửi từ tài khoản của bạn</span></li>
+            <li><span class="x">✕</span><span>Ảnh và tệp cá nhân đang bị sao chép</span></li>
+          </ul>
+          <div class="batt">🔋 <span class="bcell"><i id="battFill" style="width:100%"></i></span> <span id="battTxt">100%</span></div>
+        </div>
+        <div class="infbar">
+          <button class="underbtn" id="infBtn" style="display:none" onclick="goEnd('infected')">
+            Xem mình đã mất gì →</button>
+        </div>
+        <div class="homebar"></div>
+      </div>
+
+      <!-- Thoát an toàn -->
+      <div class="pane" id="p-safe">
+        <div class="statusbar"><span>23:44</span><span class="rt">LTE ▮</span></div>
+        <div class="safefinish">
+          <div class="ic" id="safeIc">🛡️</div>
+          <h2 id="safeTitle">Bạn đã dừng lại kịp thời</h2>
+          <p id="safeText"></p>
+          <button class="underbtn" style="width:auto;padding:12px 22px;margin-top:6px" onclick="goEnd('safe')">
+            Xem lại những dấu hiệu đã gặp →</button>
+        </div>
+        <div class="homebar"></div>
+      </div>
+    </div>
+
+    <div class="dmg" id="dmgBar"></div>
+    <p class="stagehint" id="stageHint">Chạm vào những gì trông hấp dẫn — như bạn thật sự sẽ làm.</p>
+    <button class="replaybtn" onclick="restart()">↻ Chơi lại từ đầu</button>
+    <p class="tiny">Bài diễn tập giáo dục — không thu thập, không lưu, không gửi dữ liệu thật đi đâu cả.</p>
+  </div>
+</div>
+
+<!-- ================= PHÂN TÍCH ================= -->
+<div id="end" style="display:none">
+  <div class="apwrap">
+    <div class="aph">
+      <span class="kb">PHÂN TÍCH LẠI</span>
+      <h2 id="endTitle"></h2>
+      <p>Chiêu lừa đảo không đánh vào sự ngu dốt. Nó đánh vào <b>tốc độ</b>, <b>tính cậu</b> và <b>lòng tốt</b> của bạn.
+        Dưới đây là từng chi tiết trong câu chuyện vừa rồi.</p>
+    </div>
+
+    <div class="outcome" id="endOutcome"></div>
+    <div class="tl" id="endTl"></div>
+    <div class="dmg" id="endDmg" style="margin:0 0 4px"></div>
+
+    <div class="flhead">🔍 6 DẤU HIỆU LỪA ĐẢO TRONG KỊCH BẢN NÀY
+      <small>Bấm từng dấu hiệu để xem nó xuất hiện ở đâu và vì sao nguy hiểm</small></div>
+    <div id="flagList"></div>
+
+    <div class="fixbox" id="fixBox"></div>
+
+    <div class="c333">
+      <h3>Nguyên tắc 3 Có — 3 Không khi tham gia không gian mạng</h3>
+      <ul>
+        <li><b>3 CÓ:</b> Có kiểm chứng nguồn tin · Có bảo vệ dữ liệu cá nhân · Có trích dẫn nguồn.</li>
+        <li><b>3 KHÔNG:</b> Không đạo văn · Không chia sẻ tin giả · Không vi phạm đạo đức số.</li>
+        <li><b>Một câu hỏi duy nhất cần nhớ:</b> <span id="c333q">“Đề thi chưa thi đã có sẵn link tải — ai đang cho bạn cái này, và lấy gì ở bạn?”</span></li>
+      </ul>
+    </div>
+
+    <div class="cardbox">
+      <div style="font-size:var(--fz-micro);font-weight:800;letter-spacing:1.5px;color:var(--dim)">THẺ KẾT QUẢ CỦA BẠN</div>
+      <p class="cap">Nhập tên để in thẻ rồi chụp màn hình khoe với bạn bè.</p>
+      <input class="namein" id="userName" placeholder="Nhập tên hoặc tên lớp của bạn" maxlength="34">
+      <img id="cardImg" alt="thẻ kết quả">
+      <button class="dl" onclick="downloadCard()">⬇ Tải thẻ kết quả về máy</button>
+    </div>
+
+    <div class="footbtns">
+      <button class="s" onclick="location.reload()">↻ Chơi lại</button>
+      <button class="p" onclick="window.print()">🖨 In poster</button>
+    </div>
+    <p class="pagfoot">Tuần lễ học tập — Ngày Chuyển đổi số quốc gia 10/10<br>
+      Sản phẩm học tập · lớp 11T1 · THPT Trần Nguyên Hãn · phường Tam Thắng ·
+      chủ đề “Gen Z với văn hóa học tập trong kỷ nguyên AI”, năm học 2026–2027.</p>
+  </div>
+</div>
+
+<div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+<script>
+/* =========================================================
+   CLICK HAY BỊ TRICK? — Đóng vai nạn nhân
+   1 file tĩnh. Không fetch, không gửi dữ liệu đi đâu cả.
+   ========================================================= */
+
+/* ---------- CHẾ ĐỘ SÁNG / TỐI ----------
+   Không dùng localStorage để tránh lỗi khi mở bằng file:// (một số trình duyệt
+   chặn). Thử lưu, nếu lỗi thì chỉ áp dụng cho phiên hiện tại. */
+function storeGet(k){ try{ return localStorage.getItem(k); }catch(e){ return null; } }
+function storeSet(k,v){ try{ localStorage.setItem(k,v); }catch(e){} }
+function applyTheme(t){
+  document.documentElement.setAttribute('data-theme', t);
+  $('tbTheme').textContent = (t==='light') ? '🌙' : '☀️';
+  $('tbTheme').title = (t==='light') ? 'Đang ở chế độ sáng — bấm để chuyển sang tối'
+                                     : 'Đang ở chế độ tối — bấm để chuyển sang sáng';
+}
+function initTheme(){
+  var saved = storeGet('ps-theme');
+  /* Mặc định là chế độ SÁNG — dễ đọc khi chiếu lên máy tính lớp và khi
+     in ảnh chụp màn hình. Người dùng vẫn đổi sang tối bằng nút ☀️/🌙. */
+  applyTheme(saved || 'light');
+}
+function toggleTheme(){
+  var cur = document.documentElement.getAttribute('data-theme')==='light' ? 'dark':'light';
+  applyTheme(cur); storeSet('ps-theme', cur);
+}
+
+/* ---------- CHIỀU CAO THANH TRÊN ----------
+   Băng cảnh báo và thanh điều hướng cao khác nhau tuỳ độ rộng màn hình
+   (thanh có thể xuống 2 dòng trên máy nhỏ). Vì vậy đo thật rồi gán vào biến,
+   thay vì viết cứng — nếu không nội dung sẽ bị thanh che mất. */
+function syncTop(){
+  var r=document.documentElement.style;
+  var safety=document.querySelector('.safety');
+  var topbar=document.querySelector('.topbar');
+  var sh=safety?Math.round(safety.getBoundingClientRect().height):52;
+  var th=topbar?Math.round(topbar.getBoundingClientRect().height):44;
+  r.setProperty('--safe-top', sh+'px');
+  r.setProperty('--tb-h', th+'px');
+  r.setProperty('--content-top', (sh+th+14)+'px');
+}
+window.addEventListener('load', syncTop);
+window.addEventListener('resize', syncTop);
+window.addEventListener('orientationchange', function(){ setTimeout(syncTop,120); });
+if(document.fonts && document.fonts.ready) document.fonts.ready.then(syncTop);
+
+var STEP = { i:0, total:5, dmg:[], end:null, openedFlags:0, scen:1 };
+
+/* ---------- CẤU HÌNH 2 KỊCH BẢN ----------
+   Mọi chữ riêng của từng kịch bản nằm ở đây. Khung máy, nút bấm, màn phân
+   tích, thẻ kết quả dùng chung — chỉ đổ chữ khác nhau vào. Thêm kịch bản 3
+   thì thêm 1 nhánh mới theo đúng mẫu này, không phải sửa logic. */
+var SCEN = {
+1:{
+  tbTotal:5,
+  chat:[
+    {who:'Mai Anh', t:'Ê tải đi ông, mai thi mà 🙌'},
+    {who:'Đạt Nguyễn', t:'📚 ĐỀ THI THPT TOÁN 2026 ĐÃ LEAK — TẢI NGAY\nBạn em, đề này chắc chắn có trong kỳ thi tuần sau.\nKhông có đề này tôi bỏ học 😅'}
+  ],
+  trapU:'<span class="ic">🔗</span> drive-share-free.top/de-thi-toan-2026',
+  trapWarn:'👆 Chạm vào đường dẫn để tải đề',
+  webUrl:'🔒 <i>drive-share-free.top</i>/de-thi-toan-2026',
+  webLogo:'D', webTitle:'Drive — Tài liệu', webSub:'Tải bởi: người dùng ẩn danh',
+  webFn:'de-thi-toan-2026.zip', webFm:'24 MB · Tải lên 23:38 · Chia sẻ công khai',
+  webWarn:'⚠ Tệp này có thể chứa phần mềm độc hại. Không ai kiểm tra nội dung.',
+  webBtn:'⬇ TẢI XUỐNG', webAds:'Quảng cáo: Tài liệu luyện thi THPT 2026 · Săn suất học bài miễn phí',
+  webQ:'Thấy cảnh báo đỏ rồi?',
+  dlIcon:'📥', dlFn:'de-thi-toan-2026.zip', dlDoing:'Đang tải xuống…',
+  dlDone:'<b style="color:#a35b00">Tệp đã tự mở: de-thi-toan-2026-zip.exe</b>',
+  fiPath:'Tệp của tôi › Tải về', fiIcon:'📄',
+  fiName:'de-thi-toan-2026-zip.exe', fiMeta:'24 MB · Tải về lúc 23:43 · Chưa kiểm tra',
+  fiBtn:'MỞ', fiWarn:'⚠ Tệp này không phải ứng dụng an toàn. Chạy nó có thể gây hại cho thiết bị của bạn.',
+  fiQ:'Còn dòng cảnh báo này kìa.', fiSafeBtn:'🗑 Xoá tệp',
+  infSh:'⚠️', infTitle:'Thiết bị của bạn đã bị xâm nhập',
+  infBody:'Một chương trình lạ đã chạy và tự gửi đi thứ nó lấy được từ máy bạn.',
+  infList:['2 ứng dụng lạ được cài, tự chạy khi mở máy',
+    'Mật khẩu tài khoản Google trên máy đã bị đổi',
+    '3 tin nhắn đã được gửi từ tài khoản của bạn',
+    'Ảnh và tệp cá nhân đang bị sao chép'],
+  infBtn:'Xem mình đã mất gì →',
+  notes:[
+    ['Tài khoản Google','Đã đăng nhập từ thiết bị lạ (Hà Nội)'],
+    ['Mật khẩu đã thay đổi','Yêu cầu do chương trình tự đặt'],
+    ['Tin nhắn','Đã gửi 3 tin nhắn từ tài khoản của bạn'],
+    ['Dung lượng','Đang tải thêm 8 tệp lạ về máy']
+  ],
+  safe:{
+    closed:{ic:'🛡️', t:'Bạn đã dừng lại kịp thời',
+      x:'Bạn không chạm vào. Không có tệp nào tải về, không có tài khoản nào bị đổi mật khẩu, không có tin nhắn nào bị gửi đi.'},
+    back:{ic:'←', t:'Bạn đã quay lại đúng lúc',
+      x:'Bạn nhìn thấy dòng cảnh báo đỏ ngay giữa trang và quay lại. Phần lớn người dùng bỏ qua nó rồi chạm tải.'},
+    deleted:{ic:'🗑', t:'Bạn đã xoá tệp và cảnh báo lớp',
+      x:'Bạn kịp nhận ra dòng cảnh báo màu vàng trước khi mở. Những người tải trước đó cũng sẽ dừng lại được.'}
+  },
+  hints:{
+    1:'Tin nhắn của “Đạt Nguyễn” có kèm đường dẫn. <b>Chạm vào đường dẫn đó.</b>',
+    2:'Trang này tự giả là “Google Drive”. Ngay giữa trang có một dòng cảnh báo đỏ. <b>Bạn làm gì?</b>',
+    3:'Đang tải tệp về…',
+    4:'Tệp đã tải về máy. Nhưng tên nó bị đuôi <b>.exe</b> — tức là tệp chạy được. <b>Mở hay không?</b>',
+    5:'Bạn đã mở tệp. Xem điều gì vừa xảy ra…'
+  },
+  endSafeT:'Bạn đã thoát an toàn. 6 dấu hiệu vẫn ở đây.',
+  endInfT:'6 dấu hiệu đã lừa bạn',
+  endSafeHtml:'<b>Bạn đã dừng lại đúng lúc.</b> Không mất dữ liệu, không mất tài khoản. Và đây không phải may mắn — bạn đã nhớ: dừng lại trước khi bấm.',
+  endInfHtml:'<b>Bạn đã bị lừa trong chính nhóm lớp của mình.</b> Từ một bài đăng của người lạ, bạn mất tệp trong máy, mất mật khẩu tài khoản, và tài khoản của bạn bị dùng để gửi tin cho bạn bè.',
+  fixHtml:'<b>🩺 Nếu bạn (hoặc bạn bè) đã mở tệp này rồi</b>' +
+    'Ngắt mạng ngay lập tức. Đổi mật khẩu tài khoản Google và các tài khoản đăng nhập trên máy. ' +
+    'Thu hồi các phiên đăng nhập lạ (Google: Cài đặt → Bảo mật → Quản lý thiết bị). ' +
+    'Quét máy bằng phần mềm uy tín hoặc mang máy đến quán sửa điện thoại tin cậy. ' +
+    'Kiểm tra các tin nhắn đã gửi đi và cảnh báo ngay bạn bè. Báo GVCN để cả lớp cảnh giác.',
+  question:'“Đề thi chưa thi đã có sẵn link tải — ai đang cho bạn cái này, và lấy gì ở bạn?”',
+  cardKb:'Kịch bản “Đề thi đã lộ”',
+  cardInf:'Một người lạ trong nhóm lớp đã lấy tệp trong máy tôi, đổi mật khẩu và gửi tin nhắn hộ tôi.',
+  FLAGS:[
+    ['“Đề thi đã LEAK” trước khi thi','Group Zalo · dòng tiêu đề',
+     'Không tồn tại khái niệm “đề thi bị lộ” chính thức. Đề do Bộ GD&ĐT công bố, tới ngày thi chưa ai có đề. Thấy “đã leak” là tin giả 100%.'],
+    ['Người gửi không xác minh được','Tên “Đạt Nguyễn”',
+     'Tên dễ chế, không có dấu hiệu là bạn cùng lớp. Đăng ký một tài khoản tạm chỉ mất vài phút nên kẻ lừa đảo dễ mạo danh bất cứ ai.'],
+    ['Thúc ép để bạn không kịp nghĩ','“Không có đề này tôi bỏ học 😅”',
+     'Giống hệt chiêu giục thời gian. Người thật sự chia sẻ tài liệu không cần vận động cảm xúc hay gọi tên bạn bè.'],
+    ['Đường dẫn không phải trang chính thức','drive-share-free.top',
+     'Đường dẫn thật phải là drive.google.com. Tên miền .top tự đăng ký được, chỉ chứa chữ “drive” cho giống — cổng tải tệp độc hại.'],
+    ['Cảnh báo đỏ ngay trên trang','“Tệp có thể chứa phần mềm độc hại”',
+     'Trang nào cũng dán cảnh báo đó để cho có. Nhưng ở đây cảnh báo đúng, và người dùng bỏ qua nó — đó chính là cách lừa.'],
+    ['Tệp tải về lại là tệp thực thi','de-thi-toan-2026-zip.exe',
+     'Bấm một lần là phần mềm chạy trên máy bạn. Tài liệu học tập không bao giờ có đuôi .exe. Câu hỏi duy nhất: tại sao file tải về lại khác đuôi?']
+  ],
+  TL:[
+    {k:'zalo',  t:'Người lạ đăng tin “đề thi đã lộ” vào nhóm lớp lúc 23h41'},
+    {k:'link',  t:'Bạn bấm vào đường dẫn, trang giả mạo Google Drive mở ra'},
+    {k:'web',   t:'Bạn bấm TẢI XUỐNG dù trang ghi rõ cảnh báo độc hại'},
+    {k:'file',  t:'Tệp tải về biến thành .exe — bạn bấm mở nó'},
+    {k:'inf',   t:'Máy bị cài chương trình lạ, mật khẩu bị đổi, tin nhắn bị gửi đi'}
+  ],
+  DMG:{ link:'Đã bấm vào đường dẫn', web:'Đã tải tệp', file:'Đã mở tệp .exe',
+    inf:'Máy đã bị xâm nhập', pass:'Mật khẩu bị thay đổi', msg:'Tin nhắn bị gửi hàng loạt' }
+},
+2:{
+  tbTotal:5,
+  chat:[
+    {who:'Mai Anh', t:'Mọi người ơi dậy chưa?? Mai có thi nữa không vậy 😱'},
+    {who:'Đạt Nguyễn', t:'📢 TIN KHẨN: HOÃN THI THPT 2026 VÔ THỜI HẠN\nBộ vừa họp khẩn tối nay. Ai chưa biết thì đọc ngay kẻo mai đến trường uổng công.\nChia sẻ gấp cho cả lớp biết!!'}
+  ],
+  trapU:'<span class="ic">📰</span> tinnhanh247.top/hoan-thi-thpt-2026',
+  trapWarn:'👆 Chạm để xem tin khẩn',
+  webUrl:'🔒 <i>tinnhanh247.top</i>/hoan-thi-thpt-2026',
+  webLogo:'T', webTitle:'Tin Nhanh 247', webSub:'Trang tin tổng hợp · Không ghi giấy phép báo chí',
+  webFn:'🔥 KHẨN: Kỳ thi THPT 2026 sẽ bị HOÃN vô thời hạn?',
+  webFm:'Đăng 23:38 · 12.4K lượt chia sẻ · Nguồn: không ghi',
+  webWarn:'⚠ Bài viết không ghi nguồn. Không có đường dẫn tới văn bản chính thức nào.',
+  webBtn:'↗ CHIA SẺ CHO CẢ LỚP', webAds:'Quảng cáo: Khóa học “chống liệt” THPT 2026 · Đăng ký giữ suất',
+  webQ:'Bài này ghi nguồn ở đâu?',
+  dlIcon:'📤', dlFn:'Bài viết đang đăng lên tường của bạn…', dlDoing:'Đang đăng bài…',
+  dlDone:'<b style="color:#a35b00">Đã đăng! Bài viết đang lan truyền…</b>',
+  fiPath:'Tường của bạn › Bài viết', fiIcon:'📰',
+  fiName:'KHẨN: Kỳ thi THPT 2026 sẽ bị HOÃN?', fiMeta:'👁 12 lượt xem · ↗ 0 lượt chia sẻ',
+  fiBtn:'XEM', fiWarn:'⚠ Bạn chưa kiểm chứng nguồn trước khi đăng. Bài viết vẫn đang lan truyền.',
+  fiQ:'Bài này vẫn đang lan đi đấy.', fiSafeBtn:'🗑 Gỡ bài',
+  infSh:'📢', infTitle:'Tin giả đã lan đi từ tài khoản của bạn',
+  infBody:'Bạn không tạo ra tin này — nhưng bạn là người làm nó lan nhanh nhất đêm nay.',
+  infList:['1.247 người đã thấy bài từ tài khoản của bạn',
+    '3 bạn trong lớp tin thật và chia sẻ tiếp',
+    'Cô chủ nhiệm phải gọi điện đính chính lúc 23:59',
+    'Nhà trường ra thông báo chính thức: kỳ thi diễn ra bình thường'],
+  infBtn:'Xem mình đã lan truyền gì →',
+  notes:[
+    ['Bài đăng của bạn','1.247 lượt chia sẻ và đang tăng'],
+    ['Bình luận mới','“Thật không bạn? Mai có thi không?”'],
+    ['Cuộc gọi đến','Cô chủ nhiệm: cả lớp dừng chia sẻ ngay'],
+    ['Nhà trường','Thông báo chính thức: kỳ thi diễn ra bình thường']
+  ],
+  safe:{
+    closed:{ic:'🛡️', t:'Bạn đã dừng lại kịp thời',
+      x:'Bạn không mở tin. Không có bài đăng nào từ tài khoản bạn, không ai bị lừa vì bạn.'},
+    back:{ic:'←', t:'Bạn đã quay lại đúng lúc',
+      x:'Bạn thấy bài không ghi nguồn và quay lại. Người đăng tin giả trông chờ bạn bỏ qua đúng dòng này.'},
+    deleted:{ic:'🗑', t:'Bạn đã gỡ bài và cảnh báo lớp',
+      x:'Bạn kịp gỡ bài trước khi nó lan xa. Những bạn đã chia sẻ theo cũng sẽ gỡ theo bạn.'}
+  },
+  hints:{
+    1:'Tin nhắn của “Đạt Nguyễn” có kèm một tin khẩn. <b>Chạm vào để xem.</b>',
+    2:'Trang này không phải báo chí. Bài viết không ghi nguồn ở đâu cả. <b>Bạn làm gì?</b>',
+    3:'Đang đăng bài lên tường của bạn…',
+    4:'Bài đã nằm trên tường của bạn, lượt xem tăng từng giây. <b>Mở xem hay gỡ?</b>',
+    5:'Bạn đã để bài lan truyền. Xem điều gì vừa xảy ra…'
+  },
+  endSafeT:'Bạn đã thoát an toàn. 6 dấu hiệu vẫn ở đây.',
+  endInfT:'Tin giả đã lan đi từ tay bạn',
+  endSafeHtml:'<b>Bạn đã dừng lại đúng lúc.</b> Không có bài đăng nào từ tài khoản bạn. Và đây không phải may mắn — bạn đã nhớ: kiểm chứng trước khi chia sẻ.',
+  endInfHtml:'<b>Bạn không bịa ra tin này — nhưng bạn là người lan nó nhanh nhất.</b> Từ một ảnh chụp màn hình không nguồn, 1.247 người đã thấy nó qua tài khoản của bạn, 3 bạn tin theo, và cô chủ nhiệm phải đính chính lúc nửa đêm.',
+  fixHtml:'<b>🩺 Nếu bạn (hoặc bạn bè) đã chia sẻ tin này rồi</b>' +
+    'Gỡ bài ngay lập tức. Đăng một bài đính chính, ghi rõ nguồn chính thức (ví dụ: trang của Bộ GD&ĐT, thông báo của nhà trường). ' +
+    'Nhắn riêng cho những bạn đã chia sẻ theo để họ gỡ cùng. Báo GVCN để lớp được thông tin đúng.',
+  question:'“Tin khẩn nhưng không ghi nguồn — ai đăng, lấy từ đâu, và ai hưởng lợi khi bạn chia sẻ?”',
+  cardKb:'Kịch bản “Tin khẩn giả”',
+  cardInf:'Tôi đã chia sẻ một tin không có nguồn, và 1.247 người đã thấy nó từ tài khoản của tôi.',
+  FLAGS:[
+    ['“Tin khẩn” nhưng không có nguồn','Ảnh chụp màn hình · không tên báo',
+     'Tin thật luôn có cơ quan ban hành, ngày tháng, số văn bản. Ảnh chụp màn hình không có 3 thứ đó thì coi như tin bịa — dù nó ghi “khẩn” to đến đâu.'],
+    ['Trang tin không phải báo chí','tinnhanh247.top',
+     'Tên miền .top ai cũng tự đăng ký được, đặt tên na ná trang tin cho giống. Báo thật có tên miền riêng, có giấy phép, có tên tổng biên tập.'],
+    ['Người gửi ẩn danh, giục chia sẻ nhanh','“Chia sẻ gấp cho cả lớp!!”',
+     'Tin giả sống bằng tốc độ: càng giục gấp, bạn càng không kịp kiểm chứng. Người đưa tin thật không bao giờ cần bạn “chia sẻ gấp”.'],
+    ['Lượt chia sẻ đông giả tạo uy tín','“12.4K lượt chia sẻ”',
+     'Đông không có nghĩa là đúng — 12 nghìn lượt đó có thể toàn là người cũng không kiểm chứng như mình. Đếm share không thay được việc đọc nguồn.'],
+    ['Dòng “không ghi nguồn” bị bỏ qua','Cảnh báo ngay dưới bài viết',
+     'Trang đã ghi rõ “Nguồn: không ghi”, và người dùng bỏ qua nó — đó chính là cách lừa. Dòng nhỏ đó quan trọng hơn cả tiêu đề to.'],
+    ['Nút CHIA SẺ to hơn nút kiểm chứng','Nút “↗ CHIA SẺ CHO CẢ LỚP”',
+     'Trang cố tình làm nút chia sẻ to, đỏ, nhấp nháy — còn nguồn thì giấu ở chữ nhỏ. Thiết kế đó sinh ra để bạn bấm trước, nghĩ sau.']
+  ],
+  TL:[
+    {k:'zalo',  t:'Tin “hoãn thi” không ghi nguồn xuất hiện trong nhóm lớp lúc 23h41'},
+    {k:'link',  t:'Bạn mở bài viết trên trang tinnhanh247.top'},
+    {k:'web',   t:'Bạn bấm CHIA SẺ dù bài không hề có nguồn'},
+    {k:'file',  t:'Bài đăng nằm trên tường của bạn, lượt chia sẻ tăng liên tục'},
+    {k:'inf',   t:'1.247 người đã thấy, 3 bạn tin theo, cô phải đính chính'}
+  ],
+  DMG:{ link:'Đã mở tin giả', web:'Đã chia sẻ bài viết', file:'Đã để bài lan truyền',
+    inf:'Tin giả lan từ tài khoản bạn', pass:'3 bạn đã tin theo', msg:'Cô phải đính chính' }
+}
+};
+var S = SCEN[1];
+
+/* Đổ chữ của kịch bản đang chọn vào khung điện thoại. Gọi 1 lần khi bắt đầu. */
+function applyScen(){
+  $('zaAv').textContent='11T1';
+  $('zaNm').textContent='Lớp 11T1 — ĐỒNG ĐỘI KỲ THI';
+  $('zaSt').textContent='14 thành viên';
+  $('webUrl').innerHTML=S.webUrl;
+  $('webLogo').textContent=S.webLogo;
+  $('webTitle').textContent=S.webTitle;
+  $('webSub').textContent=S.webSub;
+  $('webFn').textContent=S.webFn;
+  $('webFm').textContent=S.webFm;
+  $('webWarn').textContent=S.webWarn;
+  $('dlBtn').textContent=S.webBtn;
+  $('dlBtn').style.pointerEvents='';
+  $('webAds').textContent=S.webAds;
+  $('webQ').textContent=S.webQ;
+  $('dlIcon').textContent=S.dlIcon;
+  $('dlFn').textContent=S.dlFn;
+  $('dlFs').textContent=S.dlDoing;
+  $('dlBar').style.width='0%'; $('dlPct').textContent='0%';
+  $('fiPath').textContent=S.fiPath;
+  $('fiIcon').textContent=S.fiIcon;
+  $('fiName').textContent=S.fiName;
+  $('fiMeta').textContent=S.fiMeta;
+  $('fiBtn').textContent=S.fiBtn;
+  $('fiWarn').textContent=S.fiWarn;
+  $('fiQ').textContent=S.fiQ;
+  $('fiSafeBtn').textContent=S.fiSafeBtn;
+  $('infSh').textContent=S.infSh;
+  $('infTitle').textContent=S.infTitle;
+  $('infBody').textContent=S.infBody;
+  $('infList').innerHTML=S.infList.map(function(t){
+    return '<li><span class="x">✕</span><span>'+t+'</span></li>'; }).join('');
+  $('infBtn').textContent=S.infBtn;
+  $('infBtn').style.display='none';
+  $('infBox').classList.remove('on');
+  $('notifBox').innerHTML='';
+  $('battFill').style.width='100%'; $('battTxt').textContent='100%';
+  $('c333q').textContent=S.question;
+  STEP.total=S.tbTotal;
+}
+
+/* ---------- tiện ích ---------- */
+function $(id){ return document.getElementById(id); }
+function clean(s){ return (s||'').replace(/\D/g,''); }
+var toastT;
+function toast(t){ var el=$('toast'); el.textContent=t; el.classList.add('on');
+  clearTimeout(toastT); toastT=setTimeout(function(){el.classList.remove('on');},2500); }
+function beep(f,d,type){
+  try{ var C=window.AudioContext||window.webkitAudioContext; if(!C) return;
+    if(!window._ac) window._ac=new C(); var ac=window._ac,o=ac.createOscillator(),g=ac.createGain();
+    o.type=type||'sine'; o.frequency.value=f||880;
+    g.gain.setValueAtTime(.05,ac.currentTime);
+    g.gain.exponentialRampToValueAtTime(.0001,ac.currentTime+(d||.12));
+    o.connect(g); g.connect(ac.destination); o.start(); o.stop(ac.currentTime+(d||.12));
+  }catch(e){}
+}
+function go(id){
+  document.querySelectorAll('.pane').forEach(function(p){
+    p.classList.remove('on');
+    p.style.opacity='';
+    if(p._g) clearTimeout(p._g);
+  });
+  var t=$(id);
+  t.classList.add('on');
+  /* Lưới an toàn: nếu trình duyệt không vẽ khung hình (tab đang chạy nền, tab
+     ẩn, máy yếu) thì hiệu ứng chuyển động có thể đứng ở opacity 0 và ta thấy
+     một khung đen. Ép hiện sau 420ms để không bao giờ xảy ra. */
+  t._g=setTimeout(function(){
+    if(!t.classList.contains('on')) return;
+    t.style.transition='none';   /* phải tắt transition, nếu không nó kẹt ở opacity 0 */
+    t.style.opacity='1';
+    void t.offsetWidth;           /* ép trình duyệt tính lại */
+    t.style.transition='';
+  },420);
+}
+function addDmg(k){
+  if(STEP.dmg.indexOf(k)<0) STEP.dmg.push(k);
+  renderDmg();
+}
+function renderDmg(){
+  $('dmgBar').innerHTML = STEP.dmg.length
+    ? STEP.dmg.map(function(k){ return '<span class="chip bad">⚠ '+S.DMG[k]+'</span>'; }).join('')
+    : '<span class="chip">🛡 Chưa mất gì — mọi thứ còn an toàn</span>';
+}
+function setStep(n){
+  $('tbStep').innerHTML='Chặng <b>'+n+'</b>/'+STEP.total;
+  $('pbar').style.width=((n-1)/STEP.total*100)+'%';
+  $('stageHint').innerHTML=S.hints[n]||'';
+}
+
+/* ---------- BẮT ĐẦU ---------- */
+function start(id){
+  S = SCEN[id]||SCEN[1]; STEP.scen = SCEN[id]?id:1;
+  if(window._shareT){ clearInterval(window._shareT); window._shareT=null; }
+  $('intro').style.display='none';
+  $('stage').style.display='block';
+  $('end').style.display='none';
+  STEP.i=0; STEP.dmg=[]; STEP.end=null; STEP.openedFlags=0;
+  applyScen();
+  renderDmg(); setStep(1);
+  go('p-zalo');          /* bắt buộc: không có lệnh này thì khung điện thoại đen trống */
+  buildChat();
+}
+function restart(){ location.reload(); }
+
+/* ---------- Chặng 1 · Zalo ---------- */
+function buildChat(){
+  var box=$('zaloChat');
+  box.innerHTML='<div class="msg sys">Hôm nay</div>';
+  var lines=S.chat;
+  var k=0;
+  (function step(){
+    if(k>=lines.length){ setTimeout(showLink,420); return; }
+    var L=lines[k++];
+    var d=document.createElement('div'); d.className='msg them';
+    d.innerHTML='<div class="nm">'+L.who+'</div>'+L.t.replace(/\n/g,'<br>');
+    box.appendChild(d); box.scrollTop=box.scrollHeight; beep(560,.08);
+    setTimeout(step, 780);
+  })();
+}
+function showLink(){
+  var box=$('zaloChat');
+  var d=document.createElement('div'); d.className='msg them'; d.style.maxWidth='92%';
+  d.innerHTML='<button class="tap hint" id="theLink">'+
+    '<span class="u">'+S.trapU+'</span>'+
+    '<span class="warn">'+S.trapWarn+'</span></button>';
+  box.appendChild(d); box.scrollTop=box.scrollHeight; beep(980,.12);
+  d.querySelector('#theLink').addEventListener('click',tapLink);
+  setTimeout(function(){ d.querySelector('#theLink').classList.remove('hint'); },4200);
+}
+function tapLink(){
+  var el=$('theLink'); if(!el || el.dataset.used) return; el.dataset.used='1';
+  el.classList.remove('hint');
+  addDmg('link'); beep(1400,.1);
+  setTimeout(function(){ setStep(2); go('p-web'); window.scrollTo(0,0); },240);
+}
+
+/* ---------- Chặng 2 · Trình duyệt ---------- */
+$('dlBtn').addEventListener('click',function(){
+  this.style.pointerEvents='none';
+  addDmg('web'); beep(1200,.12);
+  setStep(3); go('p-dl'); runDownload();
+});
+
+/* ---------- Chặng 3 · Đang tải ---------- */
+function runDownload(){
+  var pct=0, bar=$('dlBar'), pEl=$('dlPct'), fs=$('dlFs');
+  var t=setInterval(function(){
+    pct += 4 + Math.floor(Math.random()*7);
+    if(pct>=100) pct=100;
+    bar.style.width=pct+'%'; pEl.textContent=pct+'%';
+    if(pct>=100){
+      clearInterval(t);
+      fs.textContent='Đã tải xong · Đang giải nén…';
+      beep(1500,.14);
+      setTimeout(function(){
+        fs.innerHTML=S.dlDone;
+        setStep(4); go('p-files'); window.scrollTo(0,0);
+        if(STEP.scen===2) runShareCount();
+      },1100);
+    }
+  },150);
+}
+
+/* ---------- Chặng 4 · Mở tệp / mở bài đăng ---------- */
+/* Kịch bản 2: lượt xem và chia sẻ tăng từng giây — chính là “hậu quả” đang diễn ra */
+function runShareCount(){
+  if(window._shareT) clearInterval(window._shareT);
+  var views=12, shares=0, el=$('fiMeta');
+  window._shareT=setInterval(function(){
+    views += 3 + Math.floor(Math.random()*9);
+    shares += 1 + Math.floor(Math.random()*4);
+    if(el) el.textContent='👁 '+views+' lượt xem · ↗ '+shares+' lượt chia sẻ';
+    if(shares>=30 && window._shareT){ clearInterval(window._shareT); window._shareT=null; }
+  },700);
+}
+$('fileRow').addEventListener('click',function(){
+  if(this.dataset.used) return; this.dataset.used='1';
+  addDmg('file'); beep(200,.4,'sawtooth');
+  setStep(5); go('p-inf'); window.scrollTo(0,0);
+  infect();
+});
+
+/* ---------- Chặng 5 · Nhiễm ---------- */
+function infect(){
+  var ph=$('phone'); ph.classList.add('shake');
+  setTimeout(function(){ ph.classList.remove('shake'); },520);
+  var box=$('infBox'); setTimeout(function(){ box.classList.add('on'); },420);
+
+  var notes=S.notes;
+  var nb=$('notifBox');
+  notes.forEach(function(n,i){
+    setTimeout(function(){
+      var d=document.createElement('div'); d.className='nt';
+      d.innerHTML='<div class="t"><span>Cảnh báo bảo mật</span><span>bây giờ</span></div>'+
+                  '<div class="b">'+n[0]+' — '+n[1]+'</div>';
+      nb.appendChild(d); beep(190,.2,'sawtooth');
+      while(nb.children.length>3) nb.removeChild(nb.firstChild);
+      if(i===1){ addDmg('pass'); }
+      if(i===2){ addDmg('msg'); }
+    }, 1500 + i*1250);
+  });
+
+  var b=100;
+  var bt=setInterval(function(){
+    b -= 2; if(b<38) b=38;
+    $('battFill').style.width=b+'%'; $('battTxt').textContent=b+'%';
+  },300);
+
+  setTimeout(function(){
+    clearInterval(bt);
+    addDmg('inf');
+    $('infBtn').style.display='block';
+  }, 6600);
+}
+
+/* ---------- Đường thoát an toàn ---------- */
+function safeExit(how){
+  STEP.end='safe';
+  var m=S.safe[how]||S.safe.closed;
+  $('safeIc').textContent=m.ic; $('safeTitle').textContent=m.t; $('safeText').textContent=m.x;
+  go('p-safe'); window.scrollTo(0,0);
+  toast('✔ Bạn đã thoát an toàn');
+}
+
+/* hệ thống kiểm tra tự động: bấm hết các lựa chọn trong trang và báo về
+   những màn hình bị trống — dùng khi sửa code, gõ lệnh checkAll() trong console */
+function checkAll(){
+  var bad=[];
+  ['p-zalo','p-web','p-dl','p-files','p-inf','p-safe','#end'].forEach(function(sel){
+    var el=$(sel.replace('#','')); if(!el) return;
+    var wasVisible = el.style.display!=='none' && getComputedStyle(el).display!=='none';
+    if(!wasVisible){ el.style.display='block'; }
+    if(sel==='#end') return;
+    if(parseFloat(getComputedStyle(el).opacity) < 0.99) bad.push(sel+' chưa bật');
+    el.style.display='';
+  });
+  return bad.length? bad : 'OK — mọi màn đều bật';
+}
+
+/* ---------- MÀN PHÂN TÍCH ---------- */
+function goEnd(kind){
+  STEP.end = (kind==='safe') ? 'safe' : 'infected';
+  var safe = STEP.end==='safe';
+  $('stage').style.display='none';
+  $('end').style.display='block';
+  $('pbar').style.width='100%';
+  $('tbStep').innerHTML = safe ? '✔ Thoát an toàn' : '✖ Đã bị lừa';
+
+  $('endTitle').textContent = safe ? S.endSafeT : S.endInfT;
+  $('endOutcome').className='outcome '+(safe?'ok':'bad');
+  $('endOutcome').innerHTML = safe ? S.endSafeHtml : S.endInfHtml;
+
+  $('endTl').innerHTML='<div class="t">HÀNH TRÌNH CỦA BẠN</div>'+S.TL.map(function(s,i){
+    var hit = STEP.dmg.indexOf(s.k) >= 0;   /* indexOf trả -1 khi chưa dính — phải so >= 0 */
+    return '<div class="tstep '+(hit?'hit':'')+'"><span class="sn">'+(hit?'✖':(i+1))+'</span>'+
+           '<span class="sx">'+s.t+'</span></div>';
+  }).join('');
+
+  $('endDmg').innerHTML = STEP.dmg.length
+    ? STEP.dmg.map(function(k){return '<span class="chip bad">⚠ '+S.DMG[k]+'</span>';}).join('')
+    : '<span class="chip">🛡 Không mất gì</span>';
+
+  var fl=$('flagList'); fl.innerHTML='';
+  S.FLAGS.forEach(function(f,i){
+    var w=document.createElement('div'); w.className='rflag-wrap';
+    var row=document.createElement('button'); row.className='rflag';
+    row.innerHTML='<span class="fn">'+(i+1)+'</span><span class="fx"><b>'+f[0]+'</b>'+
+                  '<span class="fw">📍 '+f[1]+'</span></span>';
+    var det=document.createElement('div'); det.className='fdet';
+    det.innerHTML=f[2]+'<div class="rule"><b>Cách phòng tránh:</b> dừng lại, kiểm chứng nguồn tin, và hỏi một người lớn trước khi làm bất cứ gì.</div>';
+    row.addEventListener('click',function(){
+      var on=w.classList.toggle('open'); det.classList.toggle('show',on);
+      STEP.openedFlags += on?1:-1;
+    });
+    w.appendChild(row); w.appendChild(det); fl.appendChild(w);
+  });
+
+  $('fixBox').innerHTML = S.fixHtml;
+
+  drawCard(safe);
+  window.scrollTo(0,0);
+}
+
+/* ---------- THẺ KẾT QUẢ (Canvas, vẽ ngay trên máy) ---------- */
+function drawCard(safe){
+  var img=$('cardImg');
+  var name=($('userName').value||'').trim()||'Một học sinh THPT Trần Nguyên Hãn';
+  var W=1080,H=1350,cv=document.createElement('canvas');
+  cv.width=W; cv.height=H; var g=cv.getContext('2d');
+  /* nền phẳng, không gradient — đồng bộ với phong cách minimalism */
+  g.fillStyle='#0f1119'; g.fillRect(0,0,W,H);
+  g.strokeStyle='rgba(255,255,255,.10)'; g.lineWidth=3;
+  g.strokeRect(28,28,W-56,H-56);
+
+  g.textAlign='center';
+  g.fillStyle='#9aa3c7'; g.font='700 24px Segoe UI,sans-serif';
+  g.fillText('BÀI DIỄN TẬP · KHÔNG PHẢI SỰ THẬT', W/2, 100);
+  g.fillStyle='#ffffff'; g.font='800 86px Segoe UI,sans-serif';
+  wrap(g,'CLICK HAY BỊ TRICK?', W/2, 206, 990, 96);
+  g.fillStyle='#9aa3c7'; g.font='500 29px Segoe UI,sans-serif';
+  g.fillText('Đóng vai nạn nhân · '+S.cardKb, W/2, 258);
+  g.strokeStyle='rgba(255,255,255,.12)'; g.lineWidth=2;
+  g.beginPath(); g.moveTo(120,308); g.lineTo(W-120,308); g.stroke();
+
+  g.font='146px Segoe UI Emoji,sans-serif'; g.fillText(safe?'🛡️':'🔒', W/2, 466);
+  g.fillStyle='#fff'; g.font='900 46px Segoe UI,sans-serif';
+  wrap(g, safe?'Tôi đã dừng lại kịp thời':'Tôi đã dính bẫy', W/2, 556, 900, 52);
+  g.fillStyle= safe?'#22e08a':'#ff3b5c'; g.font='900 74px Segoe UI,sans-serif';
+  g.fillText(safe?'− 0 ₫':'− 24 MB mất', W/2, 646);
+
+  var lost = STEP.dmg.length;
+  g.fillStyle='#c3caea'; g.font='500 27px Segoe UI,sans-serif';
+  wrap(g, safe
+    ? 'Tôi không tải, không mở, không nhập gì cả. Sáu dấu hiệu lừa đảo nằm ngay trong bài này.'
+    : S.cardInf,
+    W/2, 712, 880, 38);
+
+  g.fillStyle='#ffffff'; g.font='800 40px Segoe UI,sans-serif';
+  wrap(g,name, W/2, 812, 900, 50);
+
+  g.fillStyle='rgba(255,255,255,.06)'; rr(g,120,876,840,176,26); g.fill();
+  g.strokeStyle='rgba(255,255,255,.12)'; g.lineWidth=2; rr(g,120,876,840,176,26); g.stroke();
+  g.font='800 21px Segoe UI,sans-serif'; g.fillStyle='#9aa3c7';
+  g.fillText('MẤT GÌ TRONG CÂU CHUYỆN', 540, 918);
+  g.font='900 40px Segoe UI,sans-serif'; g.fillStyle= safe?'#8affc1':'#ff8b9d';
+  wrap(g, safe? 'Không mất gì cả' : (lost+' việc đã dính bẫy'), 540, 976, 780, 46);
+  g.font='600 22px Segoe UI,sans-serif'; g.fillStyle='#9aa3c7';
+  wrap(g, STEP.dmg.length ? STEP.dmg.map(function(k){return S.DMG[k];}).join(' · ')
+        : 'Dừng lại đúng lúc là đã thắng kẻ lừa đảo.', 540, 1024, 800, 30);
+
+  g.fillStyle='#8affc1'; g.font='800 25px Segoe UI,sans-serif';
+  g.fillText('3 CÓ  –  3 KHÔNG', W/2, 1132);
+  g.fillStyle='#9aa3c7'; g.font='500 21px Segoe UI,sans-serif';
+  wrap(g,'Có kiểm chứng nguồn tin · Có bảo vệ dữ liệu cá nhân · Có trích dẫn nguồn', W/2, 1172, 880, 30);
+  g.fillStyle='#ffffff'; g.font='700 22px Segoe UI,sans-serif';
+  wrap(g,'THPT Trần Nguyên Hãn · Phường Tam Thắng · Lớp 11T1 · 2026', W/2, 1266, 900, 30);
+
+  img.src=cv.toDataURL('image/png');
+}
+function rr(g,x,y,w,h,r){ g.beginPath(); g.moveTo(x+r,y);
+  g.arcTo(x+w,y,x+w,y+h,r); g.arcTo(x+w,y+h,x,y+h,r);
+  g.arcTo(x,y+h,x,y,r); g.arcTo(x,y,x+w,y,r); g.closePath(); }
+function wrap(g,t,x,y,maxw,lh){
+  var words=String(t).split(' '), line='', yy=y;
+  words.forEach(function(w){
+    var test=line?line+' '+w:w;
+    if(g.measureText(test).width>maxw){ g.fillText(line,x,yy); line=w; yy+=lh; }
+    else line=test;
+  });
+  if(line) g.fillText(line,x,yy);
+}
+function downloadCard(){
+  var a=document.createElement('a');
+  a.href=$('cardImg').src; a.download='ClickHayBiTrick-TheKetQua.png'; a.click();
+  toast('Đã tải thẻ kết quả về máy');
+}
+$('userName').addEventListener('input',function(){ drawCard(STEP.end==='safe'); });
+
+renderDmg();
+initTheme();
+syncTop();
+</script>
+</body>
+</html>
