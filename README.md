@@ -112,6 +112,7 @@ Chữ **bên trong khung điện thoại** dùng bộ riêng khai báo ở `.pho
 |---|---|
 | Không gửi gì lên mạng | 1 file HTML tĩnh — **không `fetch`, không `XMLHttpRequest`, không `<form action>`, không tài nguyên ngoài** (đo bằng `performance.getEntriesByType('resource')`: 0 request ra ngoài) |
 | Không có ô nhập thông tin thật | Trang **không có ô nhập mật khẩu/OTP/SĐT** — người chơi chỉ chạm, không nhập gì |
+| Thống kê ẩn danh local | Chỉ đếm **số lượt** (bắt đầu / bị lừa / thoát an toàn / tải thẻ) vào `localStorage` của máy đó — **không ghi tên** (ô nhập tên không bao giờ được đọc), không ghi ai, không ghi thời gian, không gửi đi đâu |
 | Không thể bị lạm dụng | Chỉ hiển thị văn bản giả lập, không có form thu thập gì, không gửi request |
 | Không dùng tên/thương hiệu thật | “Mai Anh”, “Đạt Nguyễn”, “Drive” vẽ bằng CSS, tên miền `.top` hư cấu |
 | Thoát được ngay lập tức | Nút “↻ Chơi lại” cố định dưới khung + 3 lối thoát ở đáy từng màn điện thoại |
@@ -120,8 +121,15 @@ Chữ **bên trong khung điện thoại** dùng bộ riêng khai báo ở `.pho
 
 ### Việc cần làm **trước khi trình bày**
 - [ ] Xin **GVCN / BGH đồng ý bằng văn bản**
-- [ ] **Thông báo trước cho lớp** biết đây là bài diễn tập
+- [ ] **Thông báo trước cho lớp** biết đây là bài diễn tập (kể cả việc máy chỉ đếm số lượt chơi ẩn danh)
 - [ ] Nhắc học sinh: đây là giả lập, tên miền trong trang không tồn tại
+- [ ] Đổi mã PIN quản trị (`var ADMIN_PIN='1111'` trong `<script>`) trước khi triển khai
+
+### Bảng quản trị (giáo viên)
+- Mở: **bấm 5 lần vào tên web** “CLICK HAY BỊ TRICK?” trên thanh trên → nhập mã PIN.
+- Xem: số lượt bắt đầu / bị lừa / thoát an toàn theo từng kịch bản + số thẻ đã tải — **chỉ số, không tên, không định danh**.
+- **⬇ Xuất file**: tải `thong-ke-an-danh.json` về máy giáo viên để làm báo cáo.
+- **🗑 Xoá**: trắng bảng sau buổi học.
 
 ---
 

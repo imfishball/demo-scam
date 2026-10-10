@@ -352,6 +352,27 @@ h1 span{color:var(--ink)}
   .fitem .fb{animation:none!important}
 }
 
+/* ---------- BẢNG QUẢN TRỊ (thống kê ẩn danh, chỉ trên máy này) ---------- */
+.admin-ov{position:fixed;inset:0;z-index:100000;display:flex;align-items:center;justify-content:center;
+  padding:18px;background:rgba(0,0,0,.55)}
+.admin-card{width:100%;max-width:420px;max-height:86vh;overflow:auto;background:var(--panel);
+  border:1px solid var(--line);border-radius:14px;padding:20px}
+.admin-card h3{margin:0 0 4px;font-size:var(--fz-lg)}
+.admin-card .cap{margin:0 0 14px;color:var(--dim);font-size:var(--fz-meta);line-height:1.6}
+.admin-table{width:100%;border-collapse:collapse;font-size:var(--fz-sm);margin-bottom:6px}
+.admin-table th,.admin-table td{border:1px solid var(--line);padding:9px 10px;text-align:center}
+.admin-table th{background:var(--panel2);font-size:var(--fz-meta);letter-spacing:.4px}
+.admin-table td:first-child,.admin-table th:first-child{text-align:left}
+.admin-note{font-size:var(--fz-meta);color:var(--dim);line-height:1.7;margin:10px 0 0}
+.admin-pin{width:100%;padding:14px;border-radius:10px;border:1px solid var(--line);background:var(--field);
+  color:var(--ink);font-size:20px;font-family:inherit;text-align:center;letter-spacing:8px;margin:12px 0}
+.admin-pin:focus{outline:0;border-color:var(--acc2)}
+.admin-row{display:flex;gap:9px;margin-top:12px}
+.admin-row button{flex:1;padding:13px;border-radius:10px;font-size:var(--fz-sm);font-weight:800;min-height:46px}
+.admin-row .p{color:var(--btn-fg);background:var(--btn-bg);border:1px solid var(--btn-line)}
+.admin-row .s{background:transparent;color:var(--dim);border:1px solid var(--line)}
+.admin-row .danger{background:transparent;color:var(--bad);border:1px solid var(--bad)}
+
 @media print{
   body{background:#fff}
   .safety{background:#b00020!important;-webkit-print-color-adjust:exact;print-color-adjust:exact}
@@ -406,6 +427,7 @@ h1 span{color:var(--ink)}
       <li>Đây là <b>bài diễn tập</b>. Không có màn hình này gửi đi bất cứ dữ liệu thật nào của bạn.</li>
       <li>Chỉ cần <b>chạm vào các nút, chữ và đường dẫn</b> trên màn hình. Không cần gõ gì cả.</li>
       <li>Muốn dừng lại thì chạm nút ở <b>đáy khung</b>: Đóng app, Quay lại hoặc Xoá tệp. Chọn bất kỳ nút nào cũng ra phần phân tích.</li>
+      <li>Máy này chỉ đếm <b>số lượt chơi ẩn danh</b> (không ghi tên, không ghi ai) để giáo viên tổng hợp. Giáo viên mở bảng thống kê bằng mã PIN và có thể xoá trắng sau buổi học.</li>
       <li>Sau khi đi hết câu chuyện, trang sẽ chỉ ra <b>từng dấu hiệu lừa đảo</b> mà bạn vừa gặp.</li>
     </ul>
   </div>
@@ -592,6 +614,8 @@ h1 span{color:var(--ink)}
   </div>
 </div>
 
+<div class="admin-ov" id="adminOv" style="display:none" role="dialog" aria-modal="true" aria-label="Bảng quản trị"></div>
+
 <div class="toast" id="toast" role="status" aria-live="polite"></div>
 
 <script>
@@ -605,6 +629,72 @@ h1 span{color:var(--ink)}
    chặn). Thử lưu, nếu lỗi thì chỉ áp dụng cho phiên hiện tại. */
 function storeGet(k){ try{ return localStorage.getItem(k); }catch(e){ return null; } }
 function storeSet(k,v){ try{ localStorage.setItem(k,v); }catch(e){} }
+
+/* ---------- THỐNG KÊ ẨN DANH (chỉ đếm số, chỉ nằm trên máy này) ----------
+   Giáo viên đổi mã PIN ở dòng dưới trước khi triển khai cho lớp.
+   TUYỆT ĐỐI không ghi tên (ô nhập tên thẻ kết quả không bao giờ được đọc ở đây),
+   không ghi ai, không ghi thời gian, không gửi đi đâu. */
+var ADMIN_PIN='1111';
+function statGet(){
+  try{ return JSON.parse(storeGet('cbt-stats')||'null')||{s1:0,s2:0,i1:0,i2:0,f1:0,f2:0,cards:0}; }
+  catch(e){ return {s1:0,s2:0,i1:0,i2:0,f1:0,f2:0,cards:0}; }
+}
+function statSet(o){ storeSet('cbt-stats', JSON.stringify(o)); }
+function statBump(k){ var o=statGet(); o[k]=(o[k]||0)+1; statSet(o); }
+
+/* Mở bảng quản trị: bấm 5 lần vào tên web trên thanh trên trong 2,5 giây */
+var _admN=0,_admT=0;
+document.querySelector('.tb.brand').addEventListener('click',function(){
+  var n=Date.now(); _admN=(n-_admT<2500)?_admN+1:1; _admT=n;
+  if(_admN>=5){ _admN=0; openPin(); }
+});
+function openPin(){
+  var ov=$('adminOv');
+  ov.innerHTML='<div class="admin-card"><h3>🔒 Bảng quản trị</h3>'+
+    '<p class="cap">Nhập mã PIN của giáo viên để xem thống kê ẩn danh trên máy này.</p>'+
+    '<input class="admin-pin" id="pinIn" type="password" inputmode="numeric" maxlength="8" '+
+    'placeholder="••••" aria-label="Mã PIN quản trị" autocomplete="off">'+
+    '<div class="admin-row"><button class="s" onclick="closeAdmin()">Đóng</button>'+
+    '<button class="p" onclick="checkPin()">Mở bảng</button></div></div>';
+  ov.style.display='flex';
+  setTimeout(function(){ var i=$('pinIn'); if(i) i.focus(); },60);
+}
+function checkPin(){
+  var v=(($('pinIn')||{}).value||'').trim();
+  if(v===ADMIN_PIN){ renderAdmin(); }
+  else{ toast('Sai mã PIN'); }
+}
+function renderAdmin(){
+  var o=statGet();
+  var row=function(name,s,i,f){
+    return '<tr><td>'+name+'</td><td>'+s+'</td><td>'+i+'</td><td>'+f+'</td></tr>'; };
+  $('adminOv').innerHTML='<div class="admin-card"><h3>📊 Thống kê ẩn danh</h3>'+
+    '<p class="cap">Chỉ đếm số lượt trên máy này. Không ghi tên, không ghi ai, không gửi đi đâu.</p>'+
+    '<table class="admin-table"><tr><th>Kịch bản</th><th>Bắt đầu</th><th>Bị lừa</th><th>Thoát an toàn</th></tr>'+
+    row('1 · Đề thi đã lộ',o.s1,o.i1,o.f1)+
+    row('2 · Tin khẩn giả',o.s2,o.i2,o.f2)+
+    '</table>'+
+    '<p class="cap">Thẻ kết quả đã tải về: <b>'+o.cards+'</b> lượt.</p>'+
+    '<div class="admin-row"><button class="s" onclick="exportStats()">⬇ Xuất file</button>'+
+    '<button class="danger" onclick="clearStats()">🗑 Xoá</button></div>'+
+    '<div class="admin-row"><button class="p" onclick="closeAdmin()">Đóng</button></div>'+
+    '<p class="admin-note">Xuất file tải về máy giáo viên một bảng số liệu ẩn danh (JSON). '+
+    'Xoá để trắng bảng sau buổi học.</p></div>';
+}
+function exportStats(){
+  try{
+    var blob=new Blob([JSON.stringify(statGet(),null,2)],{type:'application/json'});
+    var a=document.createElement('a');
+    a.href=URL.createObjectURL(blob); a.download='thong-ke-an-danh.json'; a.click();
+    setTimeout(function(){ URL.revokeObjectURL(a.href); },4000);
+    toast('Đã xuất file thống kê');
+  }catch(e){ toast('Không xuất được file'); }
+}
+function clearStats(){
+  statSet({s1:0,s2:0,i1:0,i2:0,f1:0,f2:0,cards:0});
+  renderAdmin(); toast('Đã xoá thống kê');
+}
+function closeAdmin(){ $('adminOv').style.display='none'; $('adminOv').innerHTML=''; }
 function applyTheme(t){
   document.documentElement.setAttribute('data-theme', t);
   $('tbTheme').textContent = (t==='light') ? '🌙' : '☀️';
@@ -911,6 +1001,7 @@ function setStep(n){
 /* ---------- BẮT ĐẦU ---------- */
 function start(id){
   S = SCEN[id]||SCEN[1]; STEP.scen = SCEN[id]?id:1;
+  statBump('s'+STEP.scen);
   if(window._shareT){ clearInterval(window._shareT); window._shareT=null; }
   $('intro').style.display='none';
   $('stage').style.display='block';
@@ -1062,6 +1153,7 @@ function checkAll(){
 function goEnd(kind){
   STEP.end = (kind==='safe') ? 'safe' : 'infected';
   var safe = STEP.end==='safe';
+  statBump((safe?'f':'i')+STEP.scen);
   $('stage').style.display='none';
   $('end').style.display='block';
   $('tbStep').innerHTML = safe ? '✔ Thoát an toàn' : '✖ Đã bị lừa';
@@ -1170,6 +1262,7 @@ function wrap(g,t,x,y,maxw,lh){
   if(line) g.fillText(line,x,yy);
 }
 function downloadCard(){
+  statBump('cards');
   var a=document.createElement('a');
   a.href=$('cardImg').src; a.download='ClickHayBiTrick-TheKetQua.png'; a.click();
   toast('Đã tải thẻ kết quả về máy');
